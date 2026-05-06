@@ -31,10 +31,5 @@ The agents are equipped with a **Shared Toolset**, allowing them to extend their
 * **Language:** Python.
 * **AI Integration:** LLMs with function-calling capabilities.
 
-## 🚀 Key Features
-* **Task Routing:** Intelligent delegation of user queries to the appropriate specialized agent.
-* **Autonomous Tool Use:** The agents can decide when to call a tool to provide accurate, up-to-date information.
-* **Domain Diversity:** Demonstrates the ability to scale a single AI system across vastly different domains (Finance, Literature, and Media).
 
-## 📈 Use Case
-This architecture is ideal for building **Universal Assistants** or **Enterprise Hubs** where a single entry point needs to provide expert-level support across multiple departments or areas of interest.
+
