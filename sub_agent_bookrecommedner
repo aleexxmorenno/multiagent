@@ -1,0 +1,91 @@
+from google.adk.agents import Agent
+from google.adk.tools.tool_context import ToolContext
+
+def get_book_recommendation(genre: str, tool_context: ToolContext) -> dict:
+    """Return a mock book recommendation for a given genre."""
+    print(f"--- Tool: get_book_recommendation called for genre: {genre} ---")
+
+    genre_key = genre.lower()
+
+    # Mock book recommendations – normally you'd call a books API
+    books = {
+        "fantasy": {
+            "title": "The Name of the Wind",
+            "author": "Patrick Rothfuss",
+            "why": "Deep world-building, poetic writing, and a compelling hero’s journey.",
+        },
+        "sci-fi": {
+            "title": "Dune",
+            "author": "Frank Herbert",
+            "why": "A groundbreaking mix of politics, ecology, and futuristic storytelling.",
+        },
+        "romance": {
+            "title": "Pride and Prejudice",
+            "author": "Jane Austen",
+            "why": "A timeless love story full of charm, wit, and social commentary.",
+        },
+        "mystery": {
+            "title": "The Girl with the Dragon Tattoo",
+            "author": "Stieg Larsson",
+            "why": "A gripping thriller filled with intrigue and intense characters.",
+        },
+        "self-help": {
+            "title": "Atomic Habits",
+            "author": "James Clear",
+            "why": "A practical and proven framework for building life-changing habits.",
+        },
+        "history": {
+            "title": "Sapiens",
+            "author": "Yuval Noah Harari",
+            "why": "A bold, engaging look at the history of humankind.",
+        },
+    }
+
+    result = books.get(
+        genre_key,
+        {
+            "title": "Curated Pick",
+            "author": "Various",
+            "why": "Popular and well-reviewed across broad audiences.",
+        },
+    )
+
+    # Save last genre for follow-ups like "give me another similar one"
+    tool_context.state["last_book_genre"] = genre_key
+
+    return {
+        "status": "success",
+        "book": result,
+        "genre": genre,
+    }
+
+
+# --- Create the Book Recommendation Agent ---
+book_recommender = Agent(
+    name="book_recommender",
+    model="gemini-2.0-flash",
+    description="Recommends books based on genre.",
+    instruction="""
+    You are a helpful book recommendation assistant.
+
+    When the user asks for a book recommendation:
+    1. If they specify a genre (e.g., fantasy, mystery, romance),
+       call get_book_recommendation with that genre.
+    2. If they don’t specify a genre, ask which genre they prefer.
+    3. Format your response to include:
+       - Book title
+       - Author
+       - One-sentence reason why it's a good pick
+
+    Example response:
+    "Here’s a great sci-fi recommendation:
+
+     📚 *Dune* by Frank Herbert  
+     Why: A visionary epic blending politics, ecology, and futuristic storytelling."
+
+    If the user asks for anything unrelated to book recommendations,
+    delegate the task to the manager agent.
+
+    """,
+    tools=[get_book_recommendation],
+)
